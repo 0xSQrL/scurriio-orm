@@ -1,0 +1,20 @@
+{
+    "name": "scurriio/orm",
+    "description": "A high speed ORM for PHP with MySQL",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Scurriio\\ORM\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "William Silloway",
+            "email": "wsilloway@gmail.com"
+        }
+    ],
+    "require": {
+        "scurriio/utils": "^1.2"
+    }
+}
