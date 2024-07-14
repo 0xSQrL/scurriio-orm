@@ -22,7 +22,7 @@ class ForeignKey{
         $this->effectsForeign = (new \ReflectionClass($toClass))->getProperty($toAttribute);
     }
 
-    private function getTable(){
+    public function getTable(){
         return Table::getRegisteredType($this->toClass)->dbClass;
     }
 

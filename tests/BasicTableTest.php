@@ -75,6 +75,25 @@ class BasicTableTest extends \PHPUnit\Framework\TestCase{
         $this->assertSame($testObject->description, $loaded->description);
     }
 
+    public function testUpdateEntry(){
+        $testObject = new TestTable();
+        $testObject->id = 21;
+        $testObject->description = "Hello";
+
+        TestTable::save($testObject);
+        
+        $loaded = TestTable::load(21);
+        $loaded->description = "Changed";
+        TestTable::save($loaded);
+
+        $reloaded = TestTable::load(21);
+
+        $this->assertSame($testObject->id, $reloaded->id);
+        $this->assertNotSame($loaded, $reloaded);
+        $this->assertNotSame($testObject->description, $reloaded->description);
+        $this->assertSame($loaded->description, $reloaded->description);
+    }
+
     
     public function testCreateMultiEntry(){
 
@@ -89,10 +108,20 @@ class BasicTableTest extends \PHPUnit\Framework\TestCase{
             "id"=>21,
             "otherId"=>52
         ]);
+        $loaded->description = "Changed";
+        TestTableMulti::save($loaded);
 
-        $this->assertSame($testObject->id, $loaded->id);
-        $this->assertSame($testObject->otherId, $loaded->otherId);
-        $this->assertSame($testObject->description, $loaded->description);
+        
+        $reloaded = TestTableMulti::load([
+            "id"=>21,
+            "otherId"=>52
+        ]);
+
+        $this->assertSame($testObject->id, $reloaded->id);
+        $this->assertSame($testObject->otherId, $reloaded->otherId);
+        $this->assertNotSame($loaded, $reloaded);
+        $this->assertNotSame($testObject->description, $reloaded->description);
+        $this->assertSame($loaded->description, $reloaded->description);
     }
 
     
@@ -109,6 +138,25 @@ class BasicTableTest extends \PHPUnit\Framework\TestCase{
 
         $this->assertSame($testObject->id, $loaded->id);
         $this->assertSame($testObject->description, $loaded->description);
+    }
+    
+    public function testUpdateAutoEntry(){
+
+        $testObject = new TestTableAuto();
+        $testObject->description = "Hello Auto";
+
+        TestTableAuto::save($testObject);
+
+        $loaded = TestTableAuto::load($testObject->id);
+        $loaded->description = "Changed";
+        TestTableAuto::save($loaded);
+
+        $reloaded = TestTableAuto::load($testObject->id);
+
+        $this->assertSame($testObject->id, $reloaded->id);
+        $this->assertNotSame($loaded, $reloaded);
+        $this->assertNotSame($testObject->description, $reloaded->description);
+        $this->assertSame($loaded->description, $reloaded->description);
     }
 
     public function testLoadFromReference(){

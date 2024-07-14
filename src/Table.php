@@ -495,7 +495,8 @@ class Table{
         foreach($table->inner->referenceColumns as $refColumn){
             $ref = $refColumn->fk;
             $toCol = $ref->toDb();
-            array_push($fkDefinitions, "FOREIGN KEY ($refColumn->dbname) REFERENCES $ref->toClass($toCol)");
+            $toTable = $ref->getTable()->table;
+            array_push($fkDefinitions, "FOREIGN KEY ($refColumn->dbname) REFERENCES $toTable($toCol)");
         }
 
         if(count($fkDefinitions) > 0){
