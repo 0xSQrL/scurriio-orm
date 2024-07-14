@@ -16,6 +16,7 @@ class Reference{
     private ?object $value = null;
 
     /**
+     * Get the referenced entry if not already loaded. Null if entry does not exist
      * @return T|null
      */
     public function resolve(): ?object{
@@ -25,17 +26,23 @@ class Reference{
         return $this->value;
     }
 
+    /**
+     * Deletes the referenced entry from the database
+     */
     public function delete(){
         $this->refTo->deleteFromKeys($this->keys);
         $this->value = null;
     }
 
+    /**
+     * Return the first primary key
+     */
     public function key(): mixed{
         return reset($this->keys);
     }
 
     /**
-     * Create a reference from an existing entity
+     * Create a reference from an existing instance object of the table
      * @var T $instance
      * @return Reference<T>
      */

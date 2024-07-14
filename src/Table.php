@@ -125,13 +125,23 @@ class Table{
         return $this->joinOn($join, $joinProp, $type);
     }
 
+    private static function coerceTable(string | Table $table): Table{
+        if(is_string($table)){
+            $table = static::getRegisteredType($table)->dbClass;
+        }
+        return $table;
+    }
+    
+    private function coerceColumn(string | Column $col): Column{
+        if(is_string($col)){
+            $col = $this->inner->properties[$col];
+        }
+        return $col;
+    }
+
     public function joinOn(string | Table $join, string | Column $onCol, string $type = "", ?string $thisAlias = null, ?string $joinAlias = null){
-        if(is_string($join)){
-            $join = static::getRegisteredType($join)->dbClass;
-        }
-        if(is_string($onCol)){
-            $onCol = $this->inner->properties[$onCol];
-        }
+        $join = static::coerceTable($join);
+        $onCol = $this->coerceColumn($onCol);
 
         if(is_null($thisAlias)){
             $thisAlias = $this->table;
@@ -156,22 +166,17 @@ class Table{
 
     
     public function invJoin(string | Table $join, string $type = ""){
-        if(is_string($join)){
-            $join = static::getRegisteredType($join)->dbClass;
-        }
+        $join = static::coerceTable($join);
         $joinProp = $join->inner->referenceColumns[$this->effects->getName()];
 
         return $this->invJoinOn($join, $joinProp, $type);
     }
 
+
     
     public function invJoinOn(string | Table $join, string | Column $onCol, string $type = "", ?string $thisAlias = null, ?string $joinAlias = null){
-        if(is_string($join)){
-            $join = static::getRegisteredType($join)->dbClass;
-        }
-        if(is_string($onCol)){
-            $onCol = $join->inner->properties[$onCol];
-        }
+        $join = static::coerceTable($join);
+        $onCol = $join->coerceColumn($onCol);
         if(is_null($thisAlias)){
             $thisAlias = $this->table;
         }
@@ -460,19 +465,53 @@ class Table{
         return $innerDbClass->dbClass->load($keys);
     }
 
-    public static function create(Table $table){
+    public static function create(string | Table $table){
+        $table = static::coerceTable($table);
+
         $tableName = $table->table;
 
 
         $columnDefinitions = [];
 
         foreach($table->inner->properties as $column){
+            if($column->isIndex()){
+                continue;
+            }
             $null = $column->effects->getType()->allowsNull() ? "DEFAULT NULL" : "NOT NULL";
             array_push($columnDefinitions, "$column->dbname $column->dbType $null");
         }
 
+        $pkDefinition = [];
+        foreach($table->inner->keys as $keyColumn){
+            $colData = [$keyColumn->dbname, $keyColumn->dbType, 'NOT NULL'];
+            if($keyColumn->idData->auto){
+                array_push($colData, "AUTO_INCREMENT");
+            }
+            array_push($columnDefinitions, join(' ', $colData));
+            array_push($pkDefinition, $keyColumn->dbname);
+        }
+
+        $fkDefinitions = [];
+        foreach($table->inner->referenceColumns as $refColumn){
+            $ref = $refColumn->fk;
+            $toCol = $ref->toDb();
+            array_push($fkDefinitions, "FOREIGN KEY ($refColumn->dbname) REFERENCES $ref->toClass($toCol)");
+        }
+
+        if(count($fkDefinitions) > 0){
+            $columnDefinitions = array_merge($columnDefinitions, $fkDefinitions);
+        }
         $columns = join(", ", $columnDefinitions);
-        $createTableStatement = static::$db->prepare("CREATE TABLE $tableName ($columns)");
+        $pk = join(", ", $pkDefinition);
+        $createTableStatement = static::$db->prepare("CREATE TABLE $tableName ($columns, PRIMARY KEY ($pk))");
+        static::tryExecute($createTableStatement);
+    }
+
+    public static function drop(string | Table $table){
+        $table = static::coerceTable($table);
+        $tableName = $table->table;
+        
+        $createTableStatement = static::$db->prepare("DROP TABLE $tableName");
         static::tryExecute($createTableStatement);
     }
 }
