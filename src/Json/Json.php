@@ -89,13 +89,15 @@ class Json{
     }
 
     
-    public function deserialize(array|string $values): object{
+    public function deserialize(array|string $values, ?object $instance = null): object{
         if(is_string($values)){
             $values = json_decode($values, true);
         }
 
-        /** @var object */
-        $instance = $this->effects->newInstanceWithoutConstructor();
+        if(!isset($instance)){
+            /** @var object */
+            $instance = $this->effects->newInstanceWithoutConstructor();
+        }
         foreach($this->properties as $prop){
             if(!isset($values[$prop->jsonName])){
                 if($prop->required || (!isset($prop->required) && $this->defaultRequired)){

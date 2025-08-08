@@ -11,10 +11,11 @@ trait BaseJson{
     }
 
     /**
+     * @param static $instance
      * @return static
      */
-    public static function deserialize(array | string $values){
-        return static::getJson()->deserialize($values);
+    public static function deserialize(array | string $values, ?object $instance = null){
+        return static::getJson()->deserialize($values, $instance);
     }
 
     public function serialize(){
