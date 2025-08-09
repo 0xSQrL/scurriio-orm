@@ -93,7 +93,7 @@ class Serialize{
     private static function deserializeDateTime(string $dateString){
         $date = DateTime::createFromFormat(static::DateTimeFormat, $dateString, new DateTimeZone("UTC"));
         if(!$date){
-            return false;
+            $date = new DateTime($dateString);
         }
         $date->setTimeZone(new DateTimeZone(date_default_timezone_get()));
         return $date;
