@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2863f0a6b4ee9b1eddcce4b7fdd83b22",
+    "content-hash": "63d232a0d510fc175dc43a06a5589050",
     "packages": [
         {
             "name": "scurriio/utils",
-            "version": "v1.2",
+            "version": "v1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/0xSQrL/scurriio-utils.git",
-                "reference": "9794f155801dfb9c67a5a41a240b9d10d1178444"
+                "reference": "efdced3092920e0f24823814e228ad0da32d24d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/0xSQrL/scurriio-utils/zipball/9794f155801dfb9c67a5a41a240b9d10d1178444",
-                "reference": "9794f155801dfb9c67a5a41a240b9d10d1178444",
+                "url": "https://api.github.com/repos/0xSQrL/scurriio-utils/zipball/efdced3092920e0f24823814e228ad0da32d24d0",
+                "reference": "efdced3092920e0f24823814e228ad0da32d24d0",
                 "shasum": ""
             },
             "type": "library",
@@ -39,9 +39,9 @@
             "description": "Utilities for Scurri PHP packages",
             "support": {
                 "issues": "https://github.com/0xSQrL/scurriio-utils/issues",
-                "source": "https://github.com/0xSQrL/scurriio-utils/tree/v1.2"
+                "source": "https://github.com/0xSQrL/scurriio-utils/tree/v1.3"
             },
-            "time": "2024-06-27T06:26:44+00:00"
+            "time": "2025-08-09T19:51:22+00:00"
         }
     ],
     "packages-dev": [
@@ -1680,10 +1680,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
