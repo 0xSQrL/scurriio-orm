@@ -83,14 +83,14 @@ class Serialize{
         }
     }
 
-    private static function serializeDateTime(DateTimeImmutable | DateTime $dateTime){
+    public static function serializeDateTime(DateTimeImmutable | DateTime $dateTime){
         $jsonDt = new DateTime();
         $jsonDt->setTimestamp($dateTime->getTimestamp());
         $jsonDt->setTimezone(new DateTimeZone("UTC"));
         return $jsonDt->format(static::DateTimeFormat);
     }
     
-    private static function deserializeDateTime(string $dateString){
+    public static function deserializeDateTime(string $dateString){
         $date = DateTime::createFromFormat(static::DateTimeFormat, $dateString, new DateTimeZone("UTC"));
         if(!$date){
             $date = new DateTime($dateString);
